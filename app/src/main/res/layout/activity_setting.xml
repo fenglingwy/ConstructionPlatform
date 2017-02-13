@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_setting"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context="com.powtronic.constructionplatform.activity.SettingActivity">
+
+    <include layout="@layout/nav" />
+
+    <LinearLayout
+        android:id="@+id/ll_reset_psw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_view_selector"
+        android:paddingEnd="16dp"
+        android:visibility="gone"
+        android:paddingLeft="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="修改密码"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="@dimen/text_size_s" />
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center_vertical|end"
+            android:background="@drawable/arrow_right" />
+    </LinearLayout>
+
+    <View style="@style/line_vertical" />
+
+    <LinearLayout
+        android:id="@+id/ll_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_view_selector"
+        android:paddingEnd="16dp"
+        android:paddingLeft="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="版本更新"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="@dimen/text_size_s"
+            android:id="@+id/textView3" />
+
+        <TextView
+            android:id="@+id/tv_version"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:text="1.0"
+            android:textColor="@color/colorTextBlack" />
+    </LinearLayout>
+
+    <View style="@style/line_vertical" />
+    <LinearLayout
+        android:id="@+id/ll_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_view_selector"
+        android:paddingEnd="16dp"
+        android:visibility="gone"
+        android:paddingLeft="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="退出登录"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="@dimen/text_size_s"
+            />
+
+
+    </LinearLayout>
+
+    <View style="@style/line_vertical" />
+</LinearLayout>
