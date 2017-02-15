@@ -1,5 +1,7 @@
 package com.powtronic.constructionplatform.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
@@ -7,7 +9,6 @@ import android.widget.Toast;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
-import com.powtronic.constructionplatform.Constants;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.adapter.ProductListAdapter;
 import com.powtronic.constructionplatform.bean.Product;
@@ -39,14 +40,14 @@ public class ProductListActivity extends BaseActivity {
 
     private void initView() {
         setTitle();
-        products.add(new Product(0, "挖掘装载机", "10000", Constants.IMAGE_URL + "ware01.jpg"));
-        products.add(new Product(1, "施工升降机", "8888", Constants.IMAGE_URL + "ware02.jpg"));
-        products.add(new Product(2, "高空作业车", "88822", Constants.IMAGE_URL + "ware03.jpg"));
-        products.add(new Product(3, "钢筋预应力机械", "218989", Constants.IMAGE_URL + "ware04.jpg"));
-        products.add(new Product(4, "钢筋连接机械", "121245", Constants.IMAGE_URL + "ware05.jpg"));
-        products.add(new Product(5, "振动桩锤", "689521", Constants.IMAGE_URL + "ware06.jpg"));
-        products.add(new Product(6, "塔式起重机", "882188", Constants.IMAGE_URL + "ware07.jpg"));
-        products.add(new Product(7, "沥青混凝土摊铺机", "652189", Constants.IMAGE_URL + "ware08.jpg"));
+        products.add(new Product(0, "挖掘装载机", "10000", "upLoading\\photo\\ware01.jpg"));
+        products.add(new Product(1, "施工升降机", "8888", "upLoading\\photo\\ware02.jpg"));
+        products.add(new Product(2, "高空作业车", "88822", "upLoading\\photo\\ware03.jpg"));
+        products.add(new Product(3, "钢筋预应力机械", "218989", "upLoading\\photo\\ware04.jpg"));
+        products.add(new Product(4, "钢筋连接机械", "121245", "upLoading\\photo\\ware05.jpg"));
+        products.add(new Product(5, "振动桩锤", "689521", "upLoading\\photo\\ware06.jpg"));
+        products.add(new Product(6, "塔式起重机", "882188", "upLoading\\photo\\ware07.jpg"));
+        products.add(new Product(7, "沥青混凝土摊铺机", "652189", "upLoading\\photo\\ware08.jpg"));
 
         adapter = new ProductListAdapter(this, products);
         mLvProduct.setAdapter(adapter);
@@ -64,7 +65,7 @@ public class ProductListActivity extends BaseActivity {
                 materialRefreshLayout.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        products.add(0, new Product(8, "new data", "111", Constants.IMAGE_URL + "new.jpg"));
+                        products.add(0, new Product(8, "new data", "10000", "upLoading\\photo\\new.jpg"));
                         adapter.notifyDataSetChanged();
                         materialRefreshLayout.finishRefresh();
                         mLvProduct.smoothScrollToPosition(0);
@@ -79,7 +80,7 @@ public class ProductListActivity extends BaseActivity {
                     @Override
                     public void run() {
                         materialRefreshLayout.finishRefreshLoadMore();
-                        products.add(new Product(8, "new data", "111", Constants.IMAGE_URL + "new.jpg"));
+                        products.add(new Product(8, "new data", "111", "upLoading\\photo\\new.jpg"));
                         adapter.notifyDataSetChanged();
                         mLvProduct.smoothScrollToPosition(products.size());
                     }
@@ -97,18 +98,39 @@ public class ProductListActivity extends BaseActivity {
 
 
     @OnItemClick(R.id.lv_product_list)
-    public void onItemClick(int postion) {
-        Product product = (Product) mLvProduct.getAdapter().getItem(postion);
+    public void onItemClick(int position) {
+        Product product = (Product) mLvProduct.getAdapter().getItem(position);
         Intent intent = new Intent(this, ProductDetailsActivity.class);
         intent.putExtra("product", product);
         startActivity(intent);
     }
 
     @OnItemLongClick(R.id.lv_product_list)
-    public boolean onItemLongClick(int postion) {
+    public boolean onItemLongClick(int position) {
 
+        showNoticeDialog(position);
+        return true;
+    }
 
-        return false;
+    private void showNoticeDialog(final int position) {
+        // 构造对话框
+        new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("确认删除该产品!")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        products.remove(position);
+                        adapter.notifyDataSetChanged();
+//                        mLvProduct.smoothScrollToPosition(0);
+                    }
+                }).show();
     }
 
     private void setTitle() {
@@ -133,7 +155,7 @@ public class ProductListActivity extends BaseActivity {
 
         if (resultCode == RESULT_OK) {
             Product product = (Product) data.getSerializableExtra("data");
-            products.add(0,product);
+            products.add(0, product);
             adapter.notifyDataSetChanged();
 
 

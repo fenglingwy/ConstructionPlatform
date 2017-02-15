@@ -7,7 +7,7 @@
     tools:context="com.powtronic.constructionplatform.activity.ModuleDisplayActivity">
 
     <FrameLayout
-        android:id="@+id/fl_search"
+        android:id="@+id/fl_module_display"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.powtronic.constructionplatform.Constants;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.bean.Product;
 import com.squareup.picasso.Picasso;
@@ -44,7 +45,8 @@ public class ProductListAdapter extends HolderAdapter<Product, ProductListAdapte
     @Override
     public void bindViewDatas(ViewHolder holder, Product product, int position) {
 //        viewHolder.iv;
-        Picasso.with(context).load(product.getImgUrl()).into(holder.iv);
+        Picasso.with(context).load(Constants.IMAGE_URL_+product.getImgUrl().replace("\\","/"))
+                .resize(112,80).into(holder.iv);
         holder.tvName.setText(product.getName());
         holder.tvPrice.setText("￥"+product.getPrice());
     }

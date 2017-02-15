@@ -30,13 +30,13 @@ public class ModuleDisplayActivity extends FragmentActivity {
         tx = fm.beginTransaction();
         if (tag == 4) {
             SuperviseFragment superviseFragment = new SuperviseFragment();
-            tx.add(R.id.fl_search, superviseFragment, "superviseFragment");
+            tx.add(R.id.fl_module_display, superviseFragment, "superviseFragment");
         } else if( tag == 5){
             SecurityFragment securityFragment = new SecurityFragment();
-            tx.add(R.id.fl_search, securityFragment, "securityFragment");
+            tx.add(R.id.fl_module_display, securityFragment, "securityFragment");
         }else {
             WareListFragment salefragment = new WareListFragment();
-            tx.add(R.id.fl_search, salefragment, "salefragment");
+            tx.add(R.id.fl_module_display, salefragment, "salefragment");
         }
         tx.commit();
     }

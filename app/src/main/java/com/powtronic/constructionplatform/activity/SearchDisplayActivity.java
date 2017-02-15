@@ -8,8 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.fragment.WareListFragment;
 
-import static android.R.attr.tag;
-
 public class SearchDisplayActivity extends AppCompatActivity {
 
     private FragmentManager fm;
@@ -28,7 +26,7 @@ public class SearchDisplayActivity extends AppCompatActivity {
         fm = getSupportFragmentManager();
         tx = fm.beginTransaction();
             WareListFragment salefragment = new WareListFragment();
-            tx.add(R.id.fl_search, salefragment, "salefragment");
+            tx.add(R.id.fl_module_display, salefragment, "salefragment");
         tx.commit();
     }
 }

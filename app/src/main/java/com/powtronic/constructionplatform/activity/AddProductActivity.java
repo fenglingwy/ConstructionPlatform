@@ -19,7 +19,8 @@ import com.lzy.okgo.OkGo;
 import com.powtronic.constructionplatform.Callback.DialogCallback;
 import com.powtronic.constructionplatform.Constants;
 import com.powtronic.constructionplatform.R;
-import com.powtronic.constructionplatform.adapter.Adapter;
+import com.powtronic.constructionplatform.adapter.ParamAdapter;
+import com.powtronic.constructionplatform.bean.HttpMsg;
 import com.powtronic.constructionplatform.bean.Product;
 import com.powtronic.constructionplatform.view.MyListView;
 
@@ -45,7 +46,7 @@ public class AddProductActivity extends BaseActivity {
     @BindView(R.id.iv_ware)
     ImageView iv_ware;
     private ArrayList<Product.Param> params;
-    private Adapter adapter;
+    private ParamAdapter paramAdapter;
     private String filePath;
 
     @Override
@@ -63,8 +64,8 @@ public class AddProductActivity extends BaseActivity {
 
         params = new ArrayList<>();
         params.add(new Product.Param());
-        adapter = new Adapter(this, params);
-        lvParams.setAdapter(adapter);
+        paramAdapter = new ParamAdapter(this, params);
+        lvParams.setAdapter(paramAdapter);
     }
 
 
@@ -72,7 +73,7 @@ public class AddProductActivity extends BaseActivity {
     public void add(View v) {
         params.add(new Product.Param());
         Log.d("TAG", "add: " + params.get(0));
-        adapter.notifyDataSetChanged();
+        paramAdapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.btn_submit)
@@ -83,27 +84,36 @@ public class AddProductActivity extends BaseActivity {
         }
         if (filePath != null) {
             updateImage(filePath);
+        }else{
+            Product product = new Product();
+            product.setName(etName.getText().toString());
+            product.setPrice(etPrice.getText().toString());
+            product.setImgUrl(Constants.IMAGE_URL + "new.jpg");
+
+            Intent intent = new Intent();
+            intent.putExtra("data", product);
+            setResult(RESULT_OK, intent);
         }
 
-        Product product = new Product();
-        product.setName(etName.getText().toString());
-        product.setPrice(etPrice.getText().toString());
-        product.setImgUrl(Constants.IMAGE_URL + "new.jpg");
-
-        Intent intent = new Intent();
-        intent.putExtra("data", product);
-        setResult(RESULT_OK, intent);
-//        finish();
     }
 
     private void updateImage(String imagePath) {
         File imageFile = new File(imagePath);
         OkGo.post(Constants.UPLOAD)
                 .headers("Content-Disposition", imageFile.getName())
-                .params("10", imageFile).execute(new DialogCallback<String>(this) {
+                .params("10", imageFile).execute(new DialogCallback<HttpMsg>(this) {
             @Override
-            public void onSuccess(String httpMsg, Call call, Response response) {
+            public void onSuccess(HttpMsg httpMsg, Call call, Response response) {
                 Log.d("TAG", "onSuccess: " + httpMsg);
+                Product product = new Product();
+                product.setName(etName.getText().toString());
+                product.setPrice(etPrice.getText().toString());
+                product.setImgUrl(httpMsg.getData());
+
+                Intent intent = new Intent();
+                intent.putExtra("data", product);
+                setResult(RESULT_OK, intent);
+
                 finish();
             }
         });

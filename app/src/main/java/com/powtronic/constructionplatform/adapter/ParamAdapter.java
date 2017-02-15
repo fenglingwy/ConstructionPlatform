@@ -20,12 +20,12 @@ import java.util.List;
  * Created by pp on 2017/1/24.
  */
 
-public class Adapter extends BaseAdapter {
+public class ParamAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private Context context;
     private List<Product.Param> params;
 
-    public Adapter(Context context, List<Product.Param> params) {
+    public ParamAdapter(Context context, List<Product.Param> params) {
         this.context = context;
         this.params = params;
         inflater = LayoutInflater.from(context);
