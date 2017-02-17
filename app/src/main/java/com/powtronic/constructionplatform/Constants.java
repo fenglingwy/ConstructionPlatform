@@ -18,4 +18,5 @@ public class Constants {
     public static final String IMAGE_URL = BASE_URL+"head_img?name=";
     public static final String IMAGE_URL_ = BASE_URL+"image?name=";
     public static final String UPLOAD = BASE_URL+"upLoading";
+    public static final String DETAIL_URL = BASE_URL+"upLoading/detail.html";
 }

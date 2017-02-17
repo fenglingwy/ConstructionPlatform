@@ -9,6 +9,9 @@ import java.util.List;
 
 public class Product implements Serializable {
     private int id;
+    private String name;
+    private String price;
+    private String imgUrl;
 
     public Product() {
 
@@ -22,9 +25,6 @@ public class Product implements Serializable {
         this.id = id;
     }
 
-    private String name;
-    private String price;
-    private String imgUrl;
 
     public List<Param> getParams() {
         return params;
