@@ -6,7 +6,7 @@ package com.powtronic.constructionplatform;
 
 public class Constants {
 
-    public static final String  BASE_URL = "http://192.168.0.88:80/";
+    public static final String  BASE_URL = "http://10.0.0.199:80/";
 
     public static final String VERSION_URL = BASE_URL+"version";
     public static final String DOWNLOAD_APK_URL = BASE_URL+"update";

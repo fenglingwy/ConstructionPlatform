@@ -1,13 +1,16 @@
 package com.powtronic.constructionplatform.activity;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.powtronic.constructionplatform.MyApplication;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.fragment.HomeFragment;
 import com.powtronic.constructionplatform.fragment.MineFragment;
@@ -70,7 +73,7 @@ public class MainActivity extends FragmentActivity {
         btn.setSelected(true);
     }
 
-    @OnClick(value = {R.id.btn_home, R.id.tv_home,R.id.ll_home})
+    @OnClick(value = {R.id.btn_home, R.id.tv_home, R.id.ll_home})
     public void toHome(View v) {
         tx = fm.beginTransaction();
         if (homeFragment == null) homeFragment = new HomeFragment();
@@ -79,8 +82,14 @@ public class MainActivity extends FragmentActivity {
         tx.commit();
     }
 
-    @OnClick(value = {R.id.btn_product, R.id.tv_product,R.id.ll_product})
+    @OnClick(value = {R.id.btn_product, R.id.tv_product, R.id.ll_product})
     public void toProduct(View v) {
+        if (MyApplication.mUser == null) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivityForResult(intent, 102);
+            return;
+        }
+
         tx = fm.beginTransaction();
         if (productFragment == null) productFragment = new ProductMenuFragment();
         tx.replace(R.id.fl_main, productFragment, "PRODUCT");
@@ -88,12 +97,25 @@ public class MainActivity extends FragmentActivity {
         tx.commit();
     }
 
-    @OnClick(value = {R.id.btn_mine, R.id.tv_mine,R.id.ll_mine})
+    @OnClick(value = {R.id.btn_mine, R.id.tv_mine, R.id.ll_mine})
     public void toMine(View v) {
         tx = fm.beginTransaction();
         if (mineFragment == null) mineFragment = new MineFragment();
         tx.replace(R.id.fl_main, mineFragment, "MINE");
         setSelector(mBtnMine, mTvMine);
         tx.commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && MyApplication.mUser != null) {
+            Log.d("TAG", "onActivityResult: "+requestCode+"     resultCode:"+resultCode);
+            tx = fm.beginTransaction();
+            if (productFragment == null) productFragment = new ProductMenuFragment();
+            tx.replace(R.id.fl_main, productFragment, "PRODUCT");
+            setSelector(mBtnProduct, mTvProduct);
+            tx.commit();
+        }
     }
 }

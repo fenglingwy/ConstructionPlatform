@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.powtronic.constructionplatform.R;
+import com.powtronic.constructionplatform.fragment.LeaseFragment;
 import com.powtronic.constructionplatform.fragment.SecurityFragment;
 import com.powtronic.constructionplatform.fragment.SuperviseFragment;
 import com.powtronic.constructionplatform.fragment.WareListFragment;
@@ -28,7 +29,10 @@ public class ModuleDisplayActivity extends FragmentActivity {
         tag = getIntent().getIntExtra("tag", -1);
         fm = getSupportFragmentManager();
         tx = fm.beginTransaction();
-        if (tag == 4) {
+        if(tag == 2){
+            LeaseFragment leaseFragment = new LeaseFragment();
+            tx.add(R.id.fl_module_display, leaseFragment, "leaseFragment");
+        } else if (tag == 4) {
             SuperviseFragment superviseFragment = new SuperviseFragment();
             tx.add(R.id.fl_module_display, superviseFragment, "superviseFragment");
         } else if( tag == 5){

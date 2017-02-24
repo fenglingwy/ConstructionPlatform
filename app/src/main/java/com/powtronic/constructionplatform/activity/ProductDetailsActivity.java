@@ -1,90 +1,97 @@
 package com.powtronic.constructionplatform.activity;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 
-import com.powtronic.constructionplatform.Constants;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.bean.Product;
+import com.powtronic.constructionplatform.fragment.DetailFragment;
+import com.powtronic.constructionplatform.fragment.ParamsFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.powtronic.constructionplatform.R.id.tabLayout;
+
 public class ProductDetailsActivity extends BaseActivity {
 
-    @BindView(R.id.wv_product_details)
-    WebView wvProductDetails;
+
+    @BindView(tabLayout)
+    TabLayout tab;
+    @BindView(R.id.viewPager)
+    ViewPager vp;
+
     private Product product;
-    private WebAppInterface mAppInterfce;
+    private MyPagerAdapter adapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
-        setTitleBar("设备详情",TITLEBAR_ONLY_BACK);
+        setTitleBar("设备详情", TITLEBAR_ONLY_BACK);
         ButterKnife.bind(this);
 
         product = (Product) getIntent().getSerializableExtra("product");
 
-        initView();
+        initViewPager();
+        initTab();
+        tab.setupWithViewPager(vp);
     }
 
-    private void initView() {
-        WebSettings settings = wvProductDetails.getSettings();
-
-        settings.setJavaScriptEnabled(true);
-        settings.setBlockNetworkImage(false);
-        settings.setAppCacheEnabled(true);
-
-        mAppInterfce = new WebAppInterface(this);
-        wvProductDetails.addJavascriptInterface(mAppInterfce,"appInterface");
-        wvProductDetails.setWebViewClient(new WC());
-
-        wvProductDetails.loadUrl(Constants.DETAIL_URL);
-
-//        //覆盖WebView默认使用第三方或系统默认浏览器打开网页的行为，使网页用WebView打开
-//        wvProductDetails.setWebViewClient(new WebViewClient(){
-//            @Override
-//            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                view.loadUrl(url);
-//                return true;
-//            }
-//        });
+    private void initTab() {
+        tab.addTab(tab.newTab());
+        tab.addTab(tab.newTab());
+//        tab.addTab(tab.newTab());
     }
 
+    private void initViewPager() {
+        List<Fragment> fragments = new ArrayList<>();
+        fragments.add(new DetailFragment());
+        fragments.add(new ParamsFragment());
+//        fragments.add(new DataFragment());
+        List<String> tabTitles = new ArrayList<>();
+        tabTitles.add("图文详情");
+        tabTitles.add("产品参数");
+//        tabTitles.add("实时数据");
 
-    class  WC extends WebViewClient{
+        adapter = new MyPagerAdapter(getSupportFragmentManager(), fragments, tabTitles);
+        vp.setAdapter(adapter);
+    }
+
+    class MyPagerAdapter extends FragmentPagerAdapter {
+
+        List<Fragment> fragments;
+        List<String> titles;
+
+        public MyPagerAdapter(FragmentManager fm, List<Fragment> fragments, List<String> titles) {
+            super(fm);
+            this.titles = titles;
+            this.fragments = fragments;
+        }
 
         @Override
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-            mAppInterfce.showDetail();
+        public Fragment getItem(int arg0) {
+            return fragments.get(arg0);
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titles.get(position);
         }
     }
 
-    class WebAppInterface{
-        private Context mContext;
-        public WebAppInterface(Context context){
-            mContext = context;
-        }
-
-        @JavascriptInterface
-        public  void showDetail(){
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("TAG", "run: ");
-                    wvProductDetails.loadUrl("javascript:showDetail(30)");
-                }
-            });
-        }
-
-    }
 
 }
