@@ -6,9 +6,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.bean.Product;
+import com.powtronic.constructionplatform.fragment.DataFragment;
 import com.powtronic.constructionplatform.fragment.DetailFragment;
 import com.powtronic.constructionplatform.fragment.ParamsFragment;
 
@@ -30,6 +32,7 @@ public class ProductDetailsActivity extends BaseActivity {
 
     private Product product;
     private MyPagerAdapter adapter;
+    private int type;
 
 
     @Override
@@ -40,6 +43,7 @@ public class ProductDetailsActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         product = (Product) getIntent().getSerializableExtra("product");
+        type = getIntent().getIntExtra("type", 0);
 
         initViewPager();
         initTab();
@@ -54,13 +58,24 @@ public class ProductDetailsActivity extends BaseActivity {
 
     private void initViewPager() {
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new DetailFragment());
-        fragments.add(new ParamsFragment());
-//        fragments.add(new DataFragment());
         List<String> tabTitles = new ArrayList<>();
-        tabTitles.add("图文详情");
-        tabTitles.add("产品参数");
-//        tabTitles.add("实时数据");
+        ParamsFragment paramsFragment = new ParamsFragment();
+        Log.d("TAG", "initViewPager:    "+type);
+        if(type == 0){
+            fragments.add(new DetailFragment());
+            fragments.add(paramsFragment);
+            tabTitles.add("图文详情");
+            tabTitles.add("产品参数");
+        }else{
+            Bundle args=new Bundle();
+            args.putInt("type", 1);
+            paramsFragment.setArguments(args);
+
+            fragments.add(paramsFragment);
+            fragments.add(new DataFragment());
+            tabTitles.add("设备详情");
+            tabTitles.add("实时数据");
+        }
 
         adapter = new MyPagerAdapter(getSupportFragmentManager(), fragments, tabTitles);
         vp.setAdapter(adapter);

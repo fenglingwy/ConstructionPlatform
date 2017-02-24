@@ -109,8 +109,8 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && MyApplication.mUser != null) {
-            Log.d("TAG", "onActivityResult: "+requestCode+"     resultCode:"+resultCode);
+        if (requestCode == 102 && resultCode == RESULT_OK && MyApplication.mUser != null) {
+            Log.d("TAG", "onActivityResult: " + requestCode + "     resultCode:" + resultCode);
             tx = fm.beginTransaction();
             if (productFragment == null) productFragment = new ProductMenuFragment();
             tx.replace(R.id.fl_main, productFragment, "PRODUCT");

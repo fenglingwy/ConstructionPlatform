@@ -29,11 +29,14 @@ public class ProductListActivity extends BaseActivity {
     MaterialRefreshLayout materialRefreshLayout;
     private ProductListAdapter adapter;
     private ArrayList<Product> products = new ArrayList<>();
+    private int type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
+        type = getIntent().getIntExtra("type", 0);
+
         ButterKnife.bind(this);
         initView();
     }
@@ -102,6 +105,7 @@ public class ProductListActivity extends BaseActivity {
         Product product = (Product) mLvProduct.getAdapter().getItem(position);
         Intent intent = new Intent(this, ProductDetailsActivity.class);
         intent.putExtra("product", product);
+        intent.putExtra("type", type);
         startActivity(intent);
     }
 
@@ -134,13 +138,8 @@ public class ProductListActivity extends BaseActivity {
     }
 
     private void setTitle() {
-        int id = getIntent().getIntExtra("id", -1);
-        String text = "";
-        if (id == 0) text = "待出售";
-        if (id == 1) text = "待出租";
-        if (id == 2) text = "已出售";
-        if (id == 3) text = "已出租";
-        setTitleBar(text, TITLEBAR_BACK_ADD);
+        String title = getIntent().getStringExtra("title");
+        setTitleBar(title, TITLEBAR_BACK_ADD);
     }
 
     @OnClick(R.id.tv_right)

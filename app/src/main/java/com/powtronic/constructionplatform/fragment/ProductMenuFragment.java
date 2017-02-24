@@ -29,6 +29,7 @@ public class ProductMenuFragment extends BaseFragment{
     private View mView;
 
     @BindView(R.id.lv_product) ListView mLvProduct;
+    private ArrayList<Map<String, String>> list;
 
     @Nullable
     @Override
@@ -41,7 +42,7 @@ public class ProductMenuFragment extends BaseFragment{
     }
 
     private void initView() {
-        ArrayList<Map<String,String>> list = new ArrayList<>();
+        list = new ArrayList<>();
         HashMap<String, String> map1 = new HashMap<>();
         map1.put("name","待出售");
         list.add(map1);
@@ -56,7 +57,7 @@ public class ProductMenuFragment extends BaseFragment{
         list.add(map4);
 
 
-        mLvProduct.setAdapter(new SimpleAdapter(getActivity(),list,R.layout.item_menu_product_menu,new String[]{"name"},
+        mLvProduct.setAdapter(new SimpleAdapter(getActivity(), list,R.layout.item_menu_product_menu,new String[]{"name"},
                 new int[]{R.id.tv_item_name}));
 
     }
@@ -64,7 +65,10 @@ public class ProductMenuFragment extends BaseFragment{
     @OnItemClick(R.id.lv_product)
     public void onItemClick(int position){
         Intent intent = new Intent(getActivity(), ProductListActivity.class);
-        intent.putExtra("id",position);
+        if(position==2||position==3){
+            intent.putExtra("type",1);
+        }
+        intent.putExtra("title",list.get(position).get("name"));
         startActivity(intent);
     }
 
