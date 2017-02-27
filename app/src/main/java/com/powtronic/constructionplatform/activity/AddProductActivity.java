@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.powtronic.constructionplatform.Callback.DialogCallback;
 import com.powtronic.constructionplatform.Constants;
@@ -55,13 +56,10 @@ public class AddProductActivity extends BaseActivity {
         setContentView(R.layout.activity_add_product);
         ButterKnife.bind(this);
         setTitleBar("新增设备", TITLEBAR_ONLY_BACK);
-
         initView();
-
     }
 
     private void initView() {
-
         params = new ArrayList<>();
         params.add(new Product.Param());
         paramAdapter = new ParamAdapter(this, params);
@@ -82,17 +80,19 @@ public class AddProductActivity extends BaseActivity {
             Toast.makeText(this, "请完善产品信息!", Toast.LENGTH_SHORT).show();
             return;
         }
+        Log.d("TAG", "submit: " + filePath);
         if (filePath != null) {
             updateImage(filePath);
-        }else{
+        } else {
             Product product = new Product();
             product.setName(etName.getText().toString());
             product.setPrice(etPrice.getText().toString());
-            product.setImgUrl(Constants.IMAGE_URL + "new.jpg");
+            product.setImgUrl("upLoading\\photo\\new.jpg");
 
             Intent intent = new Intent();
             intent.putExtra("data", product);
             setResult(RESULT_OK, intent);
+            addProduct(product);
         }
 
     }
@@ -114,9 +114,20 @@ public class AddProductActivity extends BaseActivity {
                 intent.putExtra("data", product);
                 setResult(RESULT_OK, intent);
 
-                finish();
+                addProduct(product);
             }
         });
+    }
+
+    private void addProduct(Product product) {
+        OkGo.post(Constants.ADD_PRODUCT_URL)
+                .params("params", new Gson().toJson(product))
+                .execute(new DialogCallback<HttpMsg>(AddProductActivity.this) {
+                    @Override
+                    public void onSuccess(HttpMsg httpMsg, Call call, Response response) {
+                        finish();
+                    }
+                });
     }
 
     @OnClick(R.id.iv_ware)
@@ -153,7 +164,11 @@ public class AddProductActivity extends BaseActivity {
             if (data != null) {
                 Uri uri = data.getData();
                 filePath = getPath(this, uri);
+            } else if (!new File(filePath).exists()) {
+                filePath = null;
+                return;
             }
+
             iv_ware.setImageBitmap(BitmapFactory.decodeFile(filePath));
         }
     }
@@ -176,68 +191,5 @@ public class AddProductActivity extends BaseActivity {
         }
         return null;
     }
-
-//    private void uploadFile()
-//    {
-//        String end = "/r/n";
-//        String Hyphens = "--";
-//        String boundary = "*****";
-//        try
-//        {
-//            URL url = new URL(actionUrl);
-//            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//      /* 允许Input、Output，不使用Cache */
-//            con.setDoInput(true);
-//            con.setDoOutput(true);
-//            con.setUseCaches(false);
-//      /* 设定传送的method=POST */
-//            con.setRequestMethod("POST");
-//      /* setRequestProperty */
-//            con.setRequestProperty("Connection", "Keep-Alive");
-//            con.setRequestProperty("Charset", "UTF-8");
-//            con.setRequestProperty("Content-Type",
-//                    "multipart/form-data;boundary=" + boundary);
-//      /* 设定DataOutputStream */
-//            DataOutputStream ds = new DataOutputStream(con.getOutputStream());
-//            ds.writeBytes(Hyphens + boundary + end);
-//            ds.writeBytes("Content-Disposition: form-data; "
-//                    + "name=\"file1\";filename=\"" + newName + "\"" + end);
-//            ds.writeBytes(end);
-//      /* 取得文件的FileInputStream */
-//            FileInputStream fStream = new FileInputStream(uploadFile);
-//      /* 设定每次写入1024bytes */
-//            int bufferSize = 1024;
-//            byte[] buffer = new byte[bufferSize];
-//            int length = -1;
-//      /* 从文件读取数据到缓冲区 */
-//            while ((length = fStream.read(buffer)) != -1)
-//            {
-//        /* 将数据写入DataOutputStream中 */
-//                ds.write(buffer, 0, length);
-//            }
-//            ds.writeBytes(end);
-//            ds.writeBytes(Hyphens + boundary + Hyphens + end);
-//            fStream.close();
-//            ds.flush();
-//      /* 取得Response内容 */
-//            InputStream is = con.getInputStream();
-//            int ch;
-//            StringBuffer b = new StringBuffer();
-//            while ((ch = is.read()) != -1)
-//            {
-//                b.append((char) ch);
-//            }
-//            System.out.println("上传成功");
-//            Toast.makeText(MainActivity.this, "上传成功", Toast.LENGTH_LONG)
-//                    .show();
-//            ds.close();
-//        } catch (Exception e)
-//        {
-//            System.out.println("上传失败" + e.getMessage());
-//            Toast.makeText(MainActivity.this, "上传失败" + e.getMessage(),
-//                    Toast.LENGTH_LONG).show();
-//        }
-//    }
-
 
 }

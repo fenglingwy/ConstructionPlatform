@@ -3,28 +3,30 @@ package com.powtronic.constructionplatform.bean;
 import java.io.Serializable;
 import java.util.List;
 
+import static android.R.attr.id;
+
 /**
  * Created by pp on 2017/1/10.
  */
 
 public class Product implements Serializable {
-    private int id;
+    private int _id;
     private String name;
     private String price;
     private String imgUrl;
+    private List<Param> params;
 
     public Product() {
 
     }
 
-    public int getId() {
-        return id;
+    public int get_id() {
+        return _id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void set_id(int _id) {
+        this._id = _id;
     }
-
 
     public List<Param> getParams() {
         return params;
@@ -34,7 +36,6 @@ public class Product implements Serializable {
         this.params = params;
     }
 
-    private List<Param> params;
 
     public Product(int id, String name, String price, String imgUrl) {
         this.name = name;

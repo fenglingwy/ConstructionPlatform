@@ -15,8 +15,10 @@ public class Constants {
     public static final String LOGIN_URL = BASE_URL+"login";
     public static final String RESET_PSW_URL = BASE_URL+"reset_psw";
     public static final String REGISTER_URL = BASE_URL+"register";
-    public static final String IMAGE_URL = BASE_URL+"head_img?name=";
+//    public static final String IMAGE_URL = BASE_URL+"head_img?name=";
     public static final String IMAGE_URL_ = BASE_URL+"image?name=";
     public static final String UPLOAD = BASE_URL+"upLoading";
     public static final String DETAIL_URL = BASE_URL+"upLoading/detail.html";
+    public static final String GET_DATA_URL = BASE_URL+"getData";
+    public static final String ADD_PRODUCT_URL = BASE_URL+"addProduct";
 }

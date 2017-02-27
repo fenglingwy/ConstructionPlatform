@@ -4,22 +4,32 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.lzy.okgo.OkGo;
+import com.powtronic.constructionplatform.Callback.DialogCallback;
+import com.powtronic.constructionplatform.Constants;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.adapter.ProductListAdapter;
+import com.powtronic.constructionplatform.bean.HttpMsg;
 import com.powtronic.constructionplatform.bean.Product;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import butterknife.OnItemLongClick;
+import okhttp3.Call;
+import okhttp3.Response;
 
 public class ProductListActivity extends BaseActivity {
 
@@ -39,18 +49,19 @@ public class ProductListActivity extends BaseActivity {
 
         ButterKnife.bind(this);
         initView();
+        getData();
     }
 
     private void initView() {
         setTitle();
-        products.add(new Product(0, "挖掘装载机", "10000", "upLoading\\photo\\ware01.jpg"));
-        products.add(new Product(1, "施工升降机", "8888", "upLoading\\photo\\ware02.jpg"));
-        products.add(new Product(2, "高空作业车", "88822", "upLoading\\photo\\ware03.jpg"));
-        products.add(new Product(3, "钢筋预应力机械", "218989", "upLoading\\photo\\ware04.jpg"));
-        products.add(new Product(4, "钢筋连接机械", "121245", "upLoading\\photo\\ware05.jpg"));
-        products.add(new Product(5, "振动桩锤", "689521", "upLoading\\photo\\ware06.jpg"));
-        products.add(new Product(6, "塔式起重机", "882188", "upLoading\\photo\\ware07.jpg"));
-        products.add(new Product(7, "沥青混凝土摊铺机", "652189", "upLoading\\photo\\ware08.jpg"));
+//        products.add(new Product(0, "挖掘装载机", "10000", "upLoading\\photo\\ware01.jpg"));
+//        products.add(new Product(1, "施工升降机", "8888", "upLoading\\photo\\ware02.jpg"));
+//        products.add(new Product(2, "高空作业车", "88822", "upLoading\\photo\\ware03.jpg"));
+//        products.add(new Product(3, "钢筋预应力机械", "218989", "upLoading\\photo\\ware04.jpg"));
+//        products.add(new Product(4, "钢筋连接机械", "121245", "upLoading\\photo\\ware05.jpg"));
+//        products.add(new Product(5, "振动桩锤", "689521", "upLoading\\photo\\ware06.jpg"));
+//        products.add(new Product(6, "塔式起重机", "882188", "upLoading\\photo\\ware07.jpg"));
+//        products.add(new Product(7, "沥青混凝土摊铺机", "652189", "upLoading\\photo\\ware08.jpg"));
 
         adapter = new ProductListAdapter(this, products);
         mLvProduct.setAdapter(adapter);
@@ -159,6 +170,24 @@ public class ProductListActivity extends BaseActivity {
 
 
         }
+    }
+
+    public void getData(){
+        OkGo.get(Constants.GET_DATA_URL).execute(new DialogCallback<HttpMsg>(this) {
+            @Override
+            public void onSuccess(HttpMsg httpMsg, Call call, Response response) {
+                String data = httpMsg.getData();
+                Gson gson = new Gson();
+                ArrayList<Product> datas = gson.fromJson(data, new TypeToken<List<Product>>() {
+                }.getType());
+                products.clear();
+                products.addAll(datas);
+                for(Product pro:datas){
+                    Log.d("TAG", "onSuccess: " + pro);
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
 }

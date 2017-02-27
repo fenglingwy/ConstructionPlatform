@@ -1,6 +1,7 @@
 package com.powtronic.constructionplatform.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -45,17 +46,24 @@ public class ProductListAdapter extends HolderAdapter<Product, ProductListAdapte
     @Override
     public void bindViewDatas(ViewHolder holder, Product product, int position) {
 //        viewHolder.iv;
-        Picasso.with(context).load(Constants.IMAGE_URL_+product.getImgUrl().replace("\\","/"))
-                .resize(112,80).into(holder.iv);
+        if (!TextUtils.isEmpty(product.getImgUrl())) {
+            Picasso.with(context).load(Constants.IMAGE_URL_ + product.getImgUrl().replace("\\", "/")).resize(112, 80).into(holder.iv);
+        } else {
+            Picasso.with(context).load(Constants.IMAGE_URL_ + "upLoading\\photo\\new.jpg".replace("\\", "/")).resize(112, 80).into(holder.iv);
+        }
         holder.tvName.setText(product.getName());
-        holder.tvPrice.setText("￥"+product.getPrice());
+        holder.tvPrice.setText("￥" + product.getPrice());
     }
 
     public class ViewHolder {
 
-        @BindView(R.id.tv_name) TextView tvName;
-        @BindView(R.id.tv_price) TextView tvPrice;
-        @BindView(R.id.iv_product) ImageView iv;
+        @BindView(R.id.tv_name)
+        TextView tvName;
+        @BindView(R.id.tv_price)
+        TextView tvPrice;
+        @BindView(R.id.iv_product)
+        ImageView iv;
+
         public ViewHolder(View v) {
             ButterKnife.bind(this, v);
         }

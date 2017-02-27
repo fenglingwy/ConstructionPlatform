@@ -4,6 +4,7 @@ let fs = require('fs');
 let qs = require('querystring');
 let mysql = require('mysql');
 let path = require('path');
+let time = require('moment');
 
 let formidable = require('formidable');
 let util = require('util');
@@ -47,6 +48,12 @@ let server = http.createServer((request, response) => {
         case '/upLoading':
             upLoading(request, response);
             break;
+        case '/getData':
+            getData(request, response);
+            break;
+        case '/addProduct':
+            addProduct(request, response);
+            break;
 
         case '/log':
             fs.readFile('./info.log', 'utf-8', (err, data) => {
@@ -66,11 +73,65 @@ let server = http.createServer((request, response) => {
             html(request, response);
 
 
-            // response.writeHead(404);
-            // response.end('file not found.');
+        // response.writeHead(404);
+        // response.end('file not found.');
     }
 });
 
+//add产品
+function addProduct(request, response) {
+    let body = '';
+    request.on('readable', function () {
+        let d = request.read();
+        if (d) {
+            if (typeof d == 'string') {
+                body += d;
+            } else if (typeof d == 'object' && d instanceof Buffer) {
+                body += d.toString('utf8');
+            }
+        }
+    });
+
+    request.on('end', function () {
+        let data = qs.parse(body);
+        let params = JSON.parse(data.params);
+
+        let sql = `insert into product(name,price,timestamp,imgUrl) values ('${params.name}','${params.price}','${time().format('YYYY-MM-DD HH:mm:ss')}','${params.imgUrl.replace(/\\/g, '\\\\')}')`;
+        console.log(sql);
+        mysqlClient.query(sql, function (err, result) {
+            if (err) {
+                response.writeHead(401);
+                console.log(err);
+                response.end(JSON.stringify({ result: 'error', msg: '添加失败!', data: '' }));
+            } else {
+                response.writeHead(200);
+                response.end(JSON.stringify({ result: 'success', msg: '添加成功!', data: "" }));
+            }
+        })
+
+
+
+    })
+
+}
+
+//获取产品数据
+function getData(request, response) {
+
+    let sql = `SELECT name,price,imgUrl FROM product order by timestamp desc`;
+
+    console.log(sql);
+    mysqlClient.query(sql, function (err, result) {
+        if (err) {
+            response.writeHead(401);
+            console.log(err);
+            response.end(JSON.stringify({ result: 'error', msg: '服务器异常!', data: '' }));
+        } else {
+            response.end(JSON.stringify({ result: 'success', msg: '', data: JSON.stringify(result) }));
+        }
+    })
+
+}
 
 //上传
 function upLoading(req, res) {
@@ -103,49 +164,7 @@ function upLoading(req, res) {
             })
         }
 
-
-        // upLoading\\upload_b390822e14754d43de3f3f20b4ce2389.txt
-
-
-        // res.end(util.inspect({ fields: fields, files: files }));
     });
-
-
-    // console.log(request.headers['content-disposition']);
-    // console.log(request.headers);
-
-    // let fileName = request.headers['content-disposition'];
-
-    // let filePath = path.join('./upLoading', "111.jpg");
-
-    // //判断文件夹是否存在
-    // let dirpath = path.dirname(filePath);
-    // if (!fs.existsSync(dirpath)) {
-    //     fs.mkdirSync(dirpath);
-    // }
-
-    // console.log(filePath);
-
-    // let writeStream = fs.createWriteStream(filePath);
-    // request.pipe(writeStream);
-
-    // request.on('end', function () {
-    //     response.writeHead(200);
-    //     response.end(JSON.stringify({ result: 'success', msg: '', data: '上传成功！' }));
-    // })
-
-    // let sql = `insert into upload(file_name,path,timestamp) values("${fileName}","${'./upLoading/' + fileName}",now())`;
-    // client.query(sql, function (err, result) {
-    //     if (err) {
-    //         response.writeHead(401);
-    //         console.log(err);
-    //         response.end(JSON.stringify({ result: 'error', msg: '添加失败！', data: '' }));
-    //     } else {
-    //         response.writeHead(200);
-    //         response.end(JSON.stringify({ result: 'success', msg: '添加成功！', data: result }));
-    //     }
-
-    // })
 
 }
 
@@ -165,7 +184,6 @@ function login(request, response) {
 
     request.on('end', function () {
         let data = qs.parse(body);
-
         let params = JSON.parse(data.params);
         console.log(data.params);
         console.log(params.username);
@@ -322,43 +340,39 @@ function getHeadImg(request, response, imageName) {
 
 //获取图片
 function getImage(request, response, imageName) {
-    let body = '';
-    request.on('readable', function () {
-        let d = request.read();
-        if (d) {
-            if (typeof d == 'string') {
-                body += d;
-            } else if (typeof d == 'object' && d instanceof Buffer) {
-                body += d.toString('utf8');
-            }
-        }
-    });
 
-    request.on('end', function () {
-        let data = qs.parse(body);
-        let params = data.params;
-        //判断文件夹是否存在
-        let filePath = path.join('./', imageName);
+    //判断文件夹是否存在
+    let filePath = path.join('./', imageName);
 
-        console.log(filePath);
-        let dirpath = path.dirname(filePath);
-        if (!fs.existsSync(dirpath)) {
+    console.log(filePath);
+  fs.exists(filePath, function (exists) {
+        if (exists) {
+             fs.readFile(filePath, function (err, data) {
+                response.end(data);
+            });
+        } else {
             response.writeHead(404);
             response.end(JSON.stringify({ result: 'error', msg: '文件不存在!', data: null }));
-        } else {
-            //文件传输
-            let readstream = fs.createReadStream(filePath);
-            let states = fs.statSync(filePath);
-            response.writeHead(200, { 'Content-Disposition': data.fileName, 'Content-Length': states.size });
-
-            readstream.on('data', function (chunk) {
-                response.write(chunk);
-            });
-            readstream.on('end', function () {
-                response.end();
-            });
         }
-    })
+
+    // let dirpath = path.dirname(filePath);
+    // if (!fs.existsSync(dirpath)) {
+    //     response.writeHead(404);
+    //     response.end(JSON.stringify({ result: 'error', msg: '文件不存在!', data: null }));
+    // } else {
+    //     //文件传输
+    //     let readstream = fs.createReadStream(filePath);
+    //     let states = fs.statSync(filePath);
+    //     response.writeHead(200, { 'Content-Disposition': data.fileName, 'Content-Length': states.size });
+
+    //     readstream.on('data', function (chunk) {
+    //         response.write(chunk);
+    //     });
+    //     readstream.on('end', function () {
+    //         response.end();
+        });
+    // }
+
 }
 //version
 function version(request, response) {

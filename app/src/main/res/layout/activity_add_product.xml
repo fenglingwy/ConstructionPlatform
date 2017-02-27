@@ -60,6 +60,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:hint="单价"
+                    android:inputType="number"
+
                     android:textSize="16dp" />
             </LinearLayout>
 
