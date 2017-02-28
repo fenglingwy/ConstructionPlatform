@@ -12,7 +12,7 @@ let util = require('util');
 let client = null;
 
 let server = http.createServer((request, response) => {
-    //true 解析成对象
+    //true query解析成对象
     let res = url.parse(request.url, true);
     // console.log(res);
     let d = new Date();
@@ -117,8 +117,23 @@ function addProduct(request, response) {
 
 //获取产品数据
 function getData(request, response) {
+    let res = url.parse(request.url, true);
+    let type = res.query.type;
+    let keyword = res.query.keyword;
 
-    let sql = `SELECT name,price,imgUrl FROM product order by timestamp desc`;
+    let sql = ``;
+    if (type == undefined &&keyword == undefined) {
+        sql = `SELECT name,price,imgUrl FROM product order by timestamp desc`;
+    }
+    if (type != undefined &&keyword != undefined) {
+        sql = `SELECT name,price,imgUrl FROM product where product_type = ${type} and name like '%${keyword}%' order by timestamp desc`;
+    }
+    if (type == undefined &&keyword != undefined) {
+        sql = `SELECT name,price,imgUrl FROM product where name like '%${keyword}%' order by timestamp desc`;
+    }
+    if (type != undefined &&keyword == undefined) {
+        sql = `SELECT name,price,imgUrl FROM product where product_type = ${type} order by timestamp desc`;
+    }
 
     console.log(sql);
     mysqlClient.query(sql, function (err, result) {
@@ -130,8 +145,8 @@ function getData(request, response) {
             response.end(JSON.stringify({ result: 'success', msg: '', data: JSON.stringify(result) }));
         }
     })
-
 }
+
 
 //上传
 function upLoading(req, res) {
@@ -345,9 +360,9 @@ function getImage(request, response, imageName) {
     let filePath = path.join('./', imageName);
 
     console.log(filePath);
-  fs.exists(filePath, function (exists) {
+    fs.exists(filePath, function (exists) {
         if (exists) {
-             fs.readFile(filePath, function (err, data) {
+            fs.readFile(filePath, function (err, data) {
                 response.end(data);
             });
         } else {
@@ -355,22 +370,22 @@ function getImage(request, response, imageName) {
             response.end(JSON.stringify({ result: 'error', msg: '文件不存在!', data: null }));
         }
 
-    // let dirpath = path.dirname(filePath);
-    // if (!fs.existsSync(dirpath)) {
-    //     response.writeHead(404);
-    //     response.end(JSON.stringify({ result: 'error', msg: '文件不存在!', data: null }));
-    // } else {
-    //     //文件传输
-    //     let readstream = fs.createReadStream(filePath);
-    //     let states = fs.statSync(filePath);
-    //     response.writeHead(200, { 'Content-Disposition': data.fileName, 'Content-Length': states.size });
+        // let dirpath = path.dirname(filePath);
+        // if (!fs.existsSync(dirpath)) {
+        //     response.writeHead(404);
+        //     response.end(JSON.stringify({ result: 'error', msg: '文件不存在!', data: null }));
+        // } else {
+        //     //文件传输
+        //     let readstream = fs.createReadStream(filePath);
+        //     let states = fs.statSync(filePath);
+        //     response.writeHead(200, { 'Content-Disposition': data.fileName, 'Content-Length': states.size });
 
-    //     readstream.on('data', function (chunk) {
-    //         response.write(chunk);
-    //     });
-    //     readstream.on('end', function () {
-    //         response.end();
-        });
+        //     readstream.on('data', function (chunk) {
+        //         response.write(chunk);
+        //     });
+        //     readstream.on('end', function () {
+        //         response.end();
+    });
     // }
 
 }

@@ -107,8 +107,10 @@ public class SearchActivity extends AppCompatActivity implements TextWatcher {
      */
     private void onClickSearch() {
         if (TextUtils.isEmpty(etSearch.getText().toString())) return;
-        addHistory(etSearch.getText().toString());
+        String keyword = etSearch.getText().toString();
+        addHistory(keyword);
         Intent intent = new Intent(this, SearchDisplayActivity.class);
+        intent.putExtra("keyword",keyword);
         showHistory();
         startActivity(intent);
     }

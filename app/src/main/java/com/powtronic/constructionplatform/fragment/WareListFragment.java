@@ -28,7 +28,9 @@ import com.powtronic.constructionplatform.bean.HttpMsg;
 import com.powtronic.constructionplatform.bean.Product;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,10 +52,18 @@ public class WareListFragment extends Fragment implements SaleAdapter.OnItemClic
     MaterialRefreshLayout materialRefreshLayout;
     private ArrayList<Product> products = new ArrayList<>();
     private SaleAdapter saleAdapter;
+    private String tag;
+    private String keyword;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            tag = getArguments().getString("tag");
+            keyword = getArguments().getString("keyword");
+        }
+
         View view = inflater.inflate(R.layout.fragment_sale_list, container, false);
         ButterKnife.bind(this, view);
         initView();
@@ -99,7 +109,7 @@ public class WareListFragment extends Fragment implements SaleAdapter.OnItemClic
                     @Override
                     public void run() {
                         materialRefreshLayout.finishRefresh();
-                        products.add(0,new Product(8, "new data", "111","upLoading/photo/new.jpg"));
+                        products.add(0, new Product(8, "new data", "111", "upLoading/photo/new.jpg"));
                         saleAdapter.notifyItemInserted(0);
                         mRvSale.scrollToPosition(0);
                     }
@@ -140,7 +150,7 @@ public class WareListFragment extends Fragment implements SaleAdapter.OnItemClic
     }
 
 
-    @OnClick({R.id.left, R.id.right,R.id.ll_search})
+    @OnClick({R.id.left, R.id.right, R.id.ll_search})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.left:
@@ -156,8 +166,19 @@ public class WareListFragment extends Fragment implements SaleAdapter.OnItemClic
         }
     }
 
-    public void getData(){
-        OkGo.get(Constants.GET_DATA_URL).execute(new DialogCallback<HttpMsg>(getActivity()) {
+    public void getData() {
+        Map<String,String> params = new HashMap<>();
+
+        if ("sale".equals(tag) || "rent".equals(tag)) {
+            params.put("type","1");
+        } else if ("part".equals(tag)) {
+            params.put("type","2");
+        }
+        if(keyword!=null){
+            params.put("keyword",keyword);
+        }
+
+        OkGo.get(Constants.GET_DATA_URL).params(params).execute(new DialogCallback<HttpMsg>(getActivity()) {
             @Override
             public void onSuccess(HttpMsg httpMsg, Call call, Response response) {
                 String data = httpMsg.getData();
@@ -166,7 +187,7 @@ public class WareListFragment extends Fragment implements SaleAdapter.OnItemClic
                 }.getType());
                 products.clear();
                 products.addAll(datas);
-                for(Product pro:datas){
+                for (Product pro : datas) {
                     Log.d("TAG", "onSuccess: " + pro);
                 }
                 saleAdapter.notifyDataSetChanged();

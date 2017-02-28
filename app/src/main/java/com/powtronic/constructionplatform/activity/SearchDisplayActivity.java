@@ -12,11 +12,13 @@ public class SearchDisplayActivity extends AppCompatActivity {
 
     private FragmentManager fm;
     private FragmentTransaction tx;
+    private String keyword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_display);
+        keyword = getIntent().getStringExtra("keyword");
 
         initView();
     }
@@ -25,8 +27,11 @@ public class SearchDisplayActivity extends AppCompatActivity {
 //        tag = getIntent().getIntExtra("tag", -1);
         fm = getSupportFragmentManager();
         tx = fm.beginTransaction();
-            WareListFragment salefragment = new WareListFragment();
-            tx.add(R.id.fl_module_display, salefragment, "salefragment");
+        WareListFragment wareListFragment = new WareListFragment();
+        tx.add(R.id.fl_module_display, wareListFragment, "wareListFragment");
+        Bundle bundle = new Bundle();
+        bundle.putString("keyword",keyword);
+        wareListFragment.setArguments(bundle);
         tx.commit();
     }
 }

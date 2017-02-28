@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.fragment.LeaseFragment;
-import com.powtronic.constructionplatform.fragment.SecurityFragment;
+import com.powtronic.constructionplatform.fragment.SafeFragment;
 import com.powtronic.constructionplatform.fragment.SuperviseFragment;
 import com.powtronic.constructionplatform.fragment.WareListFragment;
 
@@ -15,7 +15,7 @@ public class ModuleDisplayActivity extends FragmentActivity {
 
     private FragmentManager fm;
     private FragmentTransaction tx;
-    private int tag;
+    private String tag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,21 +26,25 @@ public class ModuleDisplayActivity extends FragmentActivity {
     }
 
     private void initView() {
-        tag = getIntent().getIntExtra("tag", -1);
+        tag = getIntent().getStringExtra("tag");
         fm = getSupportFragmentManager();
         tx = fm.beginTransaction();
-        if(tag == 2){
+//             final String[] strings = {"sale","rent","lease","part","supervise","safe"};
+        if("lease".equals(tag)){
             LeaseFragment leaseFragment = new LeaseFragment();
             tx.add(R.id.fl_module_display, leaseFragment, "leaseFragment");
-        } else if (tag == 4) {
+        } else if ("supervise".equals(tag)) {
             SuperviseFragment superviseFragment = new SuperviseFragment();
             tx.add(R.id.fl_module_display, superviseFragment, "superviseFragment");
-        } else if( tag == 5){
-            SecurityFragment securityFragment = new SecurityFragment();
-            tx.add(R.id.fl_module_display, securityFragment, "securityFragment");
+        } else if("safe".equals(tag)){
+            SafeFragment safeFragment = new SafeFragment();
+            tx.add(R.id.fl_module_display, safeFragment, "safeFragment");
         }else {
-            WareListFragment salefragment = new WareListFragment();
-            tx.add(R.id.fl_module_display, salefragment, "salefragment");
+            WareListFragment wareListFragment = new WareListFragment();
+            tx.add(R.id.fl_module_display, wareListFragment, "saleFragment");
+            Bundle bundle = new Bundle();
+            bundle.putString("tag",tag);
+            wareListFragment.setArguments(bundle);
         }
         tx.commit();
     }

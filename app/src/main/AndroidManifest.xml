@@ -38,6 +38,7 @@
         <activity
             android:name=".activity.AddProductActivity"
             android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".activity.URLSetting"></activity>
     </application>
 
 </manifest>

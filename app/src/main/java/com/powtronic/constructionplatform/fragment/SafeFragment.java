@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
  * Created by pp on 2017/1/20.
  */
 
-public class SecurityFragment extends BaseFragment {
+public class SafeFragment extends BaseFragment {
 
     @BindView(R.id.lv)
     ListView lv;

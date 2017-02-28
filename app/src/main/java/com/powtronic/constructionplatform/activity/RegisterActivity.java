@@ -54,8 +54,10 @@ public class RegisterActivity extends BaseActivity {
     private CountTimerView countTimerView;
     private String mobilePhone;
 
-    private static String APPKEY = "1aedda4cbcdd4";
     private static String APPSECRET = "615d338b433820a97059685aa1a0b31b";
+    private static String APPKEY = "1aedda4cbcdd4";
+//    private static String APPKEY = "1baf21086f87a";
+//    private static String APPSECRET = "122c771f6e6822eb49c8dbb48d98a404";
 
 
     @Override
@@ -130,6 +132,7 @@ public class RegisterActivity extends BaseActivity {
                     }
                 } else {
                     String json = ((Throwable) data).getMessage();
+                    Log.d("TAG", "afterEvent: "+json);
                     String hint = null;
                     try {
                         JSONObject object = new JSONObject(json);

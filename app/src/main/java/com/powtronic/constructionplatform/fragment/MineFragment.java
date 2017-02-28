@@ -91,6 +91,7 @@ public class MineFragment extends Fragment {
             case 0:
                 startActivity(new Intent(getActivity(), SettingActivity.class));
                 break;
+
         }
     }
 

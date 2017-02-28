@@ -81,6 +81,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void initRecyclerView() {
+        final String[] strings = {"sale","rent","lease","part","supervise","safe"};
         //设置固定大小
         rvMain.setHasFixedSize(true);
         //创建网格布局
@@ -102,7 +103,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(View view,int position) {
                 Intent intent = new Intent(getActivity(), ModuleDisplayActivity.class);
-                intent.putExtra("tag",position);
+                intent.putExtra("tag",strings[position]);
                 startActivity(intent);
             }
         });
