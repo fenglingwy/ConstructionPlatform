@@ -5,6 +5,7 @@ package com.powtronic.constructionplatform.bean;
  */
 
 public class User {
+    private int _id;
     private String username;
     private String password;
     private String mobilePhone;
@@ -23,6 +24,14 @@ public class User {
         this.password = password;
     }
     public User() {
+    }
+
+    public int get_id() {
+        return _id;
+    }
+
+    public void set_id(int _id) {
+        this._id = _id;
     }
 
     public String getUsername() {
@@ -124,7 +133,8 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "username='" + username + '\'' +
+                "_id=" + _id +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", mobilePhone='" + mobilePhone + '\'' +
                 ", realityName='" + realityName + '\'' +

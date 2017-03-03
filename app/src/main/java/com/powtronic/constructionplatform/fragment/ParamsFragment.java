@@ -2,7 +2,6 @@ package com.powtronic.constructionplatform.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,7 @@ import android.widget.ListView;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.adapter.CurrentDataAdapter;
 import com.powtronic.constructionplatform.bean.CurrentData;
+import com.powtronic.constructionplatform.bean.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,24 +39,24 @@ public class ParamsFragment extends Fragment {
     private void initView() {
         List<CurrentData> datas = new ArrayList<>();
         Bundle args = getArguments();
-        int i = (args == null) ? 0 : 1;
-        Log.d("TAG", "initViewPager:    "+ i);
-        if (args != null && 1 == args.getInt("type", 0)) {
-            datas.add(new CurrentData("商品名称", "塔式起重机"));
+        Product product = (Product) args.getSerializable("product");
+//        Log.d("TAG", "initViewPager:    "+ i);
+        String type = args.getString("type");
+        if ( "sold".equals(type)) {
+            datas.add(new CurrentData("商品名称", product.getName()));
             datas.add(new CurrentData("商品编号", "ECS000001"));
-            datas.add(new CurrentData("出厂时间", "2017-01-01"));
-            datas.add(new CurrentData("购买单位", "万达集团"));
-            datas.add(new CurrentData("联系人", "王健林"));
-            datas.add(new CurrentData("联系电话", "16888888888"));
-            datas.add(new CurrentData("使用地址", "万达广场"));
-        } else {
-            datas.add(new CurrentData("商品名称", "塔式起重机"));
+            datas.add(new CurrentData("出厂时间", product.getTimestamp()));
+            datas.add(new CurrentData("购买单位", product.getCompany()));
+            datas.add(new CurrentData("联系人", product.getBuyer()));
+            datas.add(new CurrentData("联系电话", product.getPhone()));
+            datas.add(new CurrentData("使用地址", product.getAddress()));
+        } else if("unsold".equals(type)){
+            datas.add(new CurrentData("商品名称", product.getName()));
             datas.add(new CurrentData("商品编号", "ECS000001"));
-            datas.add(new CurrentData("上架时间", "2017-01-01"));
+            datas.add(new CurrentData("上架时间", product.getTimestamp()));
             datas.add(new CurrentData("商品重量", "20"));
             datas.add(new CurrentData("商品库存", "1"));
         }
-
 
         lvParams.setAdapter(new CurrentDataAdapter(getActivity(), datas));
     }

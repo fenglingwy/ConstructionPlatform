@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.powtronic.constructionplatform.Callback.SimpleCallback;
-import com.powtronic.constructionplatform.Constants;
+import com.powtronic.constructionplatform.bean.Constants;
 import com.powtronic.constructionplatform.MyApplication;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.bean.HttpMsg;

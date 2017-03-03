@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.powtronic.constructionplatform.MyApplication;
 import com.powtronic.constructionplatform.R;
@@ -40,6 +41,7 @@ public class MainActivity extends FragmentActivity {
     Button mBtnProduct;
     @BindView(R.id.btn_mine)
     Button mBtnMine;
+    private long exitTime;
 
 
     @Override
@@ -116,6 +118,18 @@ public class MainActivity extends FragmentActivity {
             tx.replace(R.id.fl_main, productFragment, "PRODUCT");
             setSelector(mBtnProduct, mTvProduct);
             tx.commit();
+        }
+    }
+
+    //双击退出
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        if ((System.currentTimeMillis() - exitTime) > 2000) {
+            Toast.makeText(this, "再按一次返回键退出", Toast.LENGTH_SHORT).show();
+            exitTime = System.currentTimeMillis();
+        } else {
+            super.onBackPressed();
         }
     }
 }

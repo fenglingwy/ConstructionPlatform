@@ -14,7 +14,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.powtronic.constructionplatform.Constants;
+import com.powtronic.constructionplatform.bean.Constants;
 import com.powtronic.constructionplatform.MyApplication;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.activity.ContentActivity;

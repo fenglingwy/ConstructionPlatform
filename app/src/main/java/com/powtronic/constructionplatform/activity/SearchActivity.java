@@ -41,12 +41,17 @@ public class SearchActivity extends AppCompatActivity implements TextWatcher {
     LinearLayout llHistory;
     @BindView(R.id.iv_empty_history)
     ImageView iveEmpry;
+    private int product_type;
+    private int sales_type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
+
+        product_type = getIntent().getIntExtra("product_type", -1);
+        sales_type = getIntent().getIntExtra("sales_type", -1);
 
         initView();
     }
@@ -57,7 +62,7 @@ public class SearchActivity extends AppCompatActivity implements TextWatcher {
         etSearch.addTextChangedListener(this);
     }
 
-    @OnClick({R.id.iv_back, R.id.tv_search, R.id.iv_delete,R.id.iv_empty_history})
+    @OnClick({R.id.iv_back, R.id.tv_search, R.id.iv_delete, R.id.iv_empty_history})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -106,11 +111,13 @@ public class SearchActivity extends AppCompatActivity implements TextWatcher {
      * 点击搜索
      */
     private void onClickSearch() {
-        if (TextUtils.isEmpty(etSearch.getText().toString())) return;
         String keyword = etSearch.getText().toString();
+        if (TextUtils.isEmpty(keyword)) return;
         addHistory(keyword);
         Intent intent = new Intent(this, SearchDisplayActivity.class);
-        intent.putExtra("keyword",keyword);
+        intent.putExtra("keyword", keyword);
+        if (product_type != -1) intent.putExtra("product_type", product_type);
+        if (sales_type != -1) intent.putExtra("sales_type", sales_type);
         showHistory();
         startActivity(intent);
     }

@@ -30,21 +30,31 @@ public class ModuleDisplayActivity extends FragmentActivity {
         fm = getSupportFragmentManager();
         tx = fm.beginTransaction();
 //             final String[] strings = {"sale","rent","lease","part","supervise","safe"};
-        if("lease".equals(tag)){
+        if ("lease".equals(tag)) {
             LeaseFragment leaseFragment = new LeaseFragment();
             tx.add(R.id.fl_module_display, leaseFragment, "leaseFragment");
         } else if ("supervise".equals(tag)) {
             SuperviseFragment superviseFragment = new SuperviseFragment();
             tx.add(R.id.fl_module_display, superviseFragment, "superviseFragment");
-        } else if("safe".equals(tag)){
+        } else if ("safe".equals(tag)) {
             SafeFragment safeFragment = new SafeFragment();
             tx.add(R.id.fl_module_display, safeFragment, "safeFragment");
-        }else {
+        } else {
             WareListFragment wareListFragment = new WareListFragment();
             tx.add(R.id.fl_module_display, wareListFragment, "saleFragment");
             Bundle bundle = new Bundle();
-            bundle.putString("tag",tag);
-            wareListFragment.setArguments(bundle);
+            if ("sale".equals(tag)) {
+                bundle.putInt("product_type", 1);
+                bundle.putInt("sales_type", 1);
+                wareListFragment.setArguments(bundle);
+            } else if ("rent".equals(tag)) {
+                bundle.putInt("product_type", 1);
+                bundle.putInt("sales_type", 2);
+                wareListFragment.setArguments(bundle);
+            } else if ("part".equals(tag)) {
+                bundle.putInt("product_type", 2);
+                wareListFragment.setArguments(bundle);
+            }
         }
         tx.commit();
     }

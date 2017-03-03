@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
 import com.powtronic.constructionplatform.Callback.DialogCallback;
-import com.powtronic.constructionplatform.Constants;
+import com.powtronic.constructionplatform.bean.Constants;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.activity.ProductDetailsActivity;
 import com.powtronic.constructionplatform.activity.SearchActivity;
@@ -52,16 +52,18 @@ public class WareListFragment extends Fragment implements SaleAdapter.OnItemClic
     MaterialRefreshLayout materialRefreshLayout;
     private ArrayList<Product> products = new ArrayList<>();
     private SaleAdapter saleAdapter;
-    private String tag;
     private String keyword;
+    private int product_type;
+    private int sales_type;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            tag = getArguments().getString("tag");
-            keyword = getArguments().getString("keyword");
+            keyword = bundle.getString("keyword");
+            product_type = bundle.getInt("product_type", -1);
+            sales_type = bundle.getInt("sales_type", -1);
         }
 
         View view = inflater.inflate(R.layout.fragment_sale_list, container, false);
@@ -86,14 +88,6 @@ public class WareListFragment extends Fragment implements SaleAdapter.OnItemClic
         //给RecyclerView设置布局管理器
         mRvSale.setLayoutManager(girdLayoutManager);
 
-//        products.add(new Product(0, "挖掘装载机", "10000", Constants.IMAGE_URL_+"upLoading/photo/ware01.jpg"));
-//        products.add(new Product(1, "施工升降机", "8888", Constants.IMAGE_URL_+"upLoading/photo/ware02.jpg"));
-//        products.add(new Product(2, "高空作业车", "88822",  Constants.IMAGE_URL_+"upLoading/photo/ware03.jpg"));
-//        products.add(new Product(3, "钢筋预应力机械", "218989", Constants.IMAGE_URL_+"upLoading/photo/ware04.jpg"));
-//        products.add(new Product(4, "钢筋连接机械", "121245",  Constants.IMAGE_URL_+"upLoading/photo/ware05.jpg"));
-//        products.add(new Product(5, "振动桩锤", "689521",  Constants.IMAGE_URL_+"upLoading/photo/ware06.jpg"));
-//        products.add(new Product(6, "塔式起重机", "882188",  Constants.IMAGE_URL_+"upLoading/photo/ware07.jpg"));
-//        products.add(new Product(7, "沥青混凝土摊铺机", "652189", Constants.IMAGE_URL_+"upLoading/photo/ware08.jpg"));
         saleAdapter = new SaleAdapter(getActivity(), products);
         saleAdapter.setmOnItemClickListener(this);
         mRvSale.setAdapter(saleAdapter);
@@ -146,6 +140,7 @@ public class WareListFragment extends Fragment implements SaleAdapter.OnItemClic
         Product product = products.get(position);
         Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
         intent.putExtra("product", product);
+        intent.putExtra("type", "待出租");
         startActivity(intent);
     }
 
@@ -160,23 +155,18 @@ public class WareListFragment extends Fragment implements SaleAdapter.OnItemClic
                 break;
             case R.id.ll_search:
                 Intent intent = new Intent(getActivity(), SearchActivity.class);
-                intent.putExtra("type", 201);
+                intent.putExtra("product_type", product_type);
+                intent.putExtra("sales_type", sales_type);
                 startActivity(intent);
                 break;
         }
     }
 
     public void getData() {
-        Map<String,String> params = new HashMap<>();
-
-        if ("sale".equals(tag) || "rent".equals(tag)) {
-            params.put("type","1");
-        } else if ("part".equals(tag)) {
-            params.put("type","2");
-        }
-        if(keyword!=null){
-            params.put("keyword",keyword);
-        }
+        Map<String, String> params = new HashMap<>();
+        if (product_type != -1) params.put("product_type", product_type + "");
+        if (sales_type != -1) params.put("sales_type", sales_type + "");
+        if (keyword != null) params.put("keyword", keyword);
 
         OkGo.get(Constants.GET_DATA_URL).params(params).execute(new DialogCallback<HttpMsg>(getActivity()) {
             @Override

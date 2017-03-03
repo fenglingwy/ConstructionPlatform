@@ -9,7 +9,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.powtronic.constructionplatform.Constants;
+import com.powtronic.constructionplatform.bean.Constants;
 import com.powtronic.constructionplatform.R;
 
 import butterknife.BindView;

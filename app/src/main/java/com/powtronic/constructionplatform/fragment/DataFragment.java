@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.adapter.CurrentDataAdapter;
 import com.powtronic.constructionplatform.bean.CurrentData;
+import com.powtronic.constructionplatform.bean.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,9 @@ public class DataFragment extends Fragment {
     }
 
     private void initView() {
-        tvProductName.setText("塔式起重机");
+        Product product = (Product) getArguments().getSerializable("product");
+
+        tvProductName.setText(product.getName());
 
         getData();
         currentDataAdapter = new CurrentDataAdapter(getActivity(), datas);

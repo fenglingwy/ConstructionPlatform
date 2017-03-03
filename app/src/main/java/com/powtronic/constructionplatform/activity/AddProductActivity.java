@@ -13,14 +13,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.powtronic.constructionplatform.Callback.DialogCallback;
-import com.powtronic.constructionplatform.Constants;
+import com.powtronic.constructionplatform.MyApplication;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.adapter.ParamAdapter;
+import com.powtronic.constructionplatform.bean.Constants;
 import com.powtronic.constructionplatform.bean.HttpMsg;
 import com.powtronic.constructionplatform.bean.Product;
 import com.powtronic.constructionplatform.view.MyListView;
@@ -46,9 +49,27 @@ public class AddProductActivity extends BaseActivity {
     ImageView ivAdd;
     @BindView(R.id.iv_ware)
     ImageView iv_ware;
+    @BindView(R.id.Rb_product)
+    RadioButton RbProduct;
+    @BindView(R.id.Rb_part)
+    RadioButton RbPart;
+    @BindView(R.id.Rg_product_type)
+    RadioGroup RgProductType;
+    @BindView(R.id.Rb_rent_sale)
+    RadioButton RbRentSale;
+    @BindView(R.id.Rb_sale)
+    RadioButton RbSale;
+    @BindView(R.id.Rb_rent)
+    RadioButton RbRent;
+    @BindView(R.id.Rg_sale_type)
+    RadioGroup RgSaleType;
+
+
     private ArrayList<Product.Param> params;
     private ParamAdapter paramAdapter;
     private String filePath;
+    private Product product;
+    private Product.Param param;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +81,11 @@ public class AddProductActivity extends BaseActivity {
     }
 
     private void initView() {
+        product = new Product();
         params = new ArrayList<>();
+        product.setParams(params);
+        product.setUser_id(MyApplication.mUser.get_id());
+
         params.add(new Product.Param());
         paramAdapter = new ParamAdapter(this, params);
         lvParams.setAdapter(paramAdapter);
@@ -80,15 +105,35 @@ public class AddProductActivity extends BaseActivity {
             Toast.makeText(this, "请完善产品信息!", Toast.LENGTH_SHORT).show();
             return;
         }
-        Log.d("TAG", "submit: " + filePath);
+        //设置产品信息
+        product.setName(etName.getText().toString());
+        product.setPrice(etPrice.getText().toString());
+
+        switch (RgProductType.getCheckedRadioButtonId()){
+            case R.id.Rb_product:
+                product.setProduct_type(1);
+                break;
+            case R.id.Rb_part:
+                product.setProduct_type(2);
+                break;
+
+        }
+        switch (RgSaleType.getCheckedRadioButtonId()){
+            case R.id.Rb_rent_sale:
+                product.setSales_type(3);
+                break;
+            case R.id.Rb_sale:
+                product.setSales_type(1);
+                break;
+            case R.id.Rb_rent:
+                product.setSales_type(2);
+                break;
+        }
+
         if (filePath != null) {
             updateImage(filePath);
         } else {
-            Product product = new Product();
-            product.setName(etName.getText().toString());
-            product.setPrice(etPrice.getText().toString());
             product.setImgUrl("upLoading\\photo\\new.jpg");
-
             Intent intent = new Intent();
             intent.putExtra("data", product);
             setResult(RESULT_OK, intent);
@@ -97,6 +142,11 @@ public class AddProductActivity extends BaseActivity {
 
     }
 
+    /**
+     * 上传图片
+     *
+     * @param imagePath
+     */
     private void updateImage(String imagePath) {
         File imageFile = new File(imagePath);
         OkGo.post(Constants.UPLOAD)
@@ -105,9 +155,7 @@ public class AddProductActivity extends BaseActivity {
             @Override
             public void onSuccess(HttpMsg httpMsg, Call call, Response response) {
                 Log.d("TAG", "onSuccess: " + httpMsg);
-                Product product = new Product();
-                product.setName(etName.getText().toString());
-                product.setPrice(etPrice.getText().toString());
+
                 product.setImgUrl(httpMsg.getData());
 
                 Intent intent = new Intent();
@@ -119,6 +167,11 @@ public class AddProductActivity extends BaseActivity {
         });
     }
 
+    /**
+     * 上传product信息
+     *
+     * @param product
+     */
     private void addProduct(Product product) {
         OkGo.post(Constants.ADD_PRODUCT_URL)
                 .params("params", new Gson().toJson(product))
@@ -135,6 +188,9 @@ public class AddProductActivity extends BaseActivity {
         chooseImage();
     }
 
+    /**
+     * 选择照片
+     */
     private void chooseImage() {
         //创建打开系统图库的Intent1
         Intent intent1 = new Intent(Intent.ACTION_PICK);

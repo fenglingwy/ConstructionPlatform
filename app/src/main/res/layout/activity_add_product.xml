@@ -45,25 +45,108 @@
             <View style="@style/line_vertical" />
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="46dp">
+            android:layout_width="match_parent"
+            android:layout_height="46dp">
 
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="45dp"
                     android:gravity="center_vertical"
                     android:paddingStart="15dp"
-                    android:text="单价" />
+                    android:text="单价"
+                    android:id="@+id/textView4" />
 
                 <EditText
-                    android:id="@+id/et_price"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:hint="单价"
-                    android:inputType="number"
+                android:id="@+id/et_price"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:hint="单价"
+                android:inputType="number"
 
-                    android:textSize="16dp" />
+                android:textSize="16dp" />
+        </LinearLayout>
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="46dp">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="45dp"
+                android:gravity="center_vertical"
+                android:paddingStart="15dp"
+                android:text="产品类型" />
+
+                <RadioGroup
+                    android:id="@+id/Rg_product_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    >
+                    <RadioButton
+                        android:id="@+id/Rb_product"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="设备"
+                        android:checked="true"
+                        android:textColor="#666"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/Rb_part"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="配件"
+                        android:textColor="#666"
+                        />
+                </RadioGroup>
+
+
             </LinearLayout>
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="46dp">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="45dp"
+                android:gravity="center_vertical"
+                android:paddingStart="15dp"
+                android:text="销售方式" />
+
+                <RadioGroup
+                    android:id="@+id/Rg_sale_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    >
+                    <RadioButton
+                        android:id="@+id/Rb_rent_sale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="租售"
+                        android:checked="true"
+                        android:textColor="#666"
+                        />
+                    <RadioButton
+                        android:id="@+id/Rb_sale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="出售"
+                        android:textColor="#666"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/Rb_rent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="出租"
+                        android:textColor="#666"
+                        />
+
+                </RadioGroup>
+        </LinearLayout>
 
             <View style="@style/line_vertical" />
 

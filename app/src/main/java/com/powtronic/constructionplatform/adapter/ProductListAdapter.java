@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.powtronic.constructionplatform.Constants;
+import com.powtronic.constructionplatform.bean.Constants;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.bean.Product;
 import com.squareup.picasso.Picasso;

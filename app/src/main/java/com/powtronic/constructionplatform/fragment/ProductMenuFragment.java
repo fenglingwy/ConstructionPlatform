@@ -65,10 +65,10 @@ public class ProductMenuFragment extends BaseFragment{
     @OnItemClick(R.id.lv_product)
     public void onItemClick(int position){
         Intent intent = new Intent(getActivity(), ProductListActivity.class);
-        if(position==2||position==3){
-            intent.putExtra("type",1);
-        }
-        intent.putExtra("title",list.get(position).get("name"));
+//        if(position==2||position==3){
+//            intent.putExtra("type",1);
+//        }
+        intent.putExtra("type",list.get(position).get("name"));
         startActivity(intent);
     }
 

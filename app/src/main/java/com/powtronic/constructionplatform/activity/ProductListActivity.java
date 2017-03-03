@@ -13,10 +13,11 @@ import com.cjj.MaterialRefreshListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
+import com.lzy.okgo.request.GetRequest;
 import com.powtronic.constructionplatform.Callback.DialogCallback;
-import com.powtronic.constructionplatform.Constants;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.adapter.ProductListAdapter;
+import com.powtronic.constructionplatform.bean.Constants;
 import com.powtronic.constructionplatform.bean.HttpMsg;
 import com.powtronic.constructionplatform.bean.Product;
 
@@ -39,13 +40,13 @@ public class ProductListActivity extends BaseActivity {
     MaterialRefreshLayout materialRefreshLayout;
     private ProductListAdapter adapter;
     private ArrayList<Product> products = new ArrayList<>();
-    private int type;
+    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
-        type = getIntent().getIntExtra("type", 0);
+        type = getIntent().getStringExtra("type");
 
         ButterKnife.bind(this);
         initView();
@@ -54,15 +55,6 @@ public class ProductListActivity extends BaseActivity {
 
     private void initView() {
         setTitle();
-//        products.add(new Product(0, "挖掘装载机", "10000", "upLoading\\photo\\ware01.jpg"));
-//        products.add(new Product(1, "施工升降机", "8888", "upLoading\\photo\\ware02.jpg"));
-//        products.add(new Product(2, "高空作业车", "88822", "upLoading\\photo\\ware03.jpg"));
-//        products.add(new Product(3, "钢筋预应力机械", "218989", "upLoading\\photo\\ware04.jpg"));
-//        products.add(new Product(4, "钢筋连接机械", "121245", "upLoading\\photo\\ware05.jpg"));
-//        products.add(new Product(5, "振动桩锤", "689521", "upLoading\\photo\\ware06.jpg"));
-//        products.add(new Product(6, "塔式起重机", "882188", "upLoading\\photo\\ware07.jpg"));
-//        products.add(new Product(7, "沥青混凝土摊铺机", "652189", "upLoading\\photo\\ware08.jpg"));
-
         adapter = new ProductListAdapter(this, products);
         mLvProduct.setAdapter(adapter);
 
@@ -149,8 +141,7 @@ public class ProductListActivity extends BaseActivity {
     }
 
     private void setTitle() {
-        String title = getIntent().getStringExtra("title");
-        setTitleBar(title, TITLEBAR_BACK_ADD);
+        setTitleBar(type, TITLEBAR_BACK_ADD);
     }
 
     @OnClick(R.id.tv_right)
@@ -173,7 +164,29 @@ public class ProductListActivity extends BaseActivity {
     }
 
     public void getData(){
-        OkGo.get(Constants.GET_DATA_URL).execute(new DialogCallback<HttpMsg>(this) {
+        //TODO 分类搜索数据
+        String url = "";
+        GetRequest request=null;
+        switch (type){
+            case "待出售":
+                request = OkGo.get(Constants.GET_DATA_URL);
+                break;
+            case "待出租":
+                request = OkGo.get(Constants.GET_DATA_URL);
+                break;
+            case "已出售":
+               request = OkGo.get(Constants.GET_SOLD_DATA_URL)
+                        .params("user_id", 1)
+                        .params("sales_type", 1);
+                break;
+            case "已出租":
+                request = OkGo.get(Constants.GET_SOLD_DATA_URL)
+                        .params("user_id", 1)
+                        .params("sales_type", 2);
+                break;
+        }
+
+        request.execute(new DialogCallback<HttpMsg>(this) {
             @Override
             public void onSuccess(HttpMsg httpMsg, Call call, Response response) {
                 String data = httpMsg.getData();
