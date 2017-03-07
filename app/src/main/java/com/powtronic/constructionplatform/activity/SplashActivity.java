@@ -20,7 +20,6 @@ public class SplashActivity extends FragmentActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-
         initView();
         delayEnterHome();
     }

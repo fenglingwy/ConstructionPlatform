@@ -69,7 +69,6 @@ public class AddProductActivity extends BaseActivity {
     private ParamAdapter paramAdapter;
     private String filePath;
     private Product product;
-    private Product.Param param;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -8,9 +8,11 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.powtronic.constructionplatform.bean.Constants;
 
@@ -48,14 +50,14 @@ public class Update {
     private int current;
 
     public Update(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
     }
 
     public void checkUpdate(String lastVersion) {
         if (!getVersionCode(mContext).equals(lastVersion)) {
             Log.d("TAG", "handleMessage: " + getVersionCode(mContext) + lastVersion);
             showNoticeDialog();
-        }else {
+        } else {
             showNoticeDialog2();
         }
     }
@@ -114,7 +116,22 @@ public class Update {
         mProgress.setProgress(0);
         mProgress.setCanceledOnTouchOutside(false);
         mProgress.setCancelable(false);
+
+        dialogSetType(mProgress);
         mProgress.show();
+    }
+
+    private void dialogSetType(AlertDialog ad) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            //解决Android 7.1.1起不能再用Toast的问题（先解决crash）
+            if (Build.VERSION.SDK_INT > 24) {
+                ad.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
+            } else {
+                ad.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
+            }
+        } else {
+            ad.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
+        }
     }
 
     public void update() {
@@ -170,7 +187,7 @@ public class Update {
 
     private void showNoticeDialog() {
         // 构造对话框
-        new AlertDialog.Builder(mContext)
+        AlertDialog alertDialog = new AlertDialog.Builder(mContext)
                 .setTitle("提示")
                 .setMessage("软件有新的版本!")
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -185,7 +202,9 @@ public class Update {
                         showDownloadDialog();
                         downloadApk();
                     }
-                }).show();
+                }).create();
+        dialogSetType(alertDialog);
+        alertDialog.show();
     }
 
     private void showNoticeDialog2() {

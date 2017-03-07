@@ -51,6 +51,9 @@ let server = http.createServer((request, response) => {
         case '/getData':
             getData(request, response);
             break;
+        case '/getSoldData':
+            getSoldData(request, response);
+            break;
         case '/addProduct':
             addProduct(request, response);
             break;
@@ -96,7 +99,8 @@ function addProduct(request, response) {
         let data = qs.parse(body);
         let params = JSON.parse(data.params);
 
-        let sql = `insert into product(name,price,timestamp,imgUrl) values ('${params.name}','${params.price}','${time().format('YYYY-MM-DD HH:mm:ss')}','${params.imgUrl.replace(/\\/g, '\\\\')}')`;
+        let sql = `insert into product(name,price,timestamp,imgUrl,product_type,sales_type,user_id) 
+        values ('${params.name}','${params.price}','${time().format('YYYY-MM-DD HH:mm:ss')}','${params.imgUrl.replace(/\\/g, '\\\\')}','${params.product_type}','${params.sales_type}','${params.user_id}')`;
         console.log(sql);
         mysqlClient.query(sql, function (err, result) {
             if (err) {
@@ -118,24 +122,58 @@ function addProduct(request, response) {
 //获取产品数据
 function getData(request, response) {
     let res = url.parse(request.url, true);
-    let type = res.query.type;
+    let product_type = res.query.product_type;
+    let sales_type = res.query.sales_type;
     let keyword = res.query.keyword;
 
     let sql = ``;
-    if (type == undefined &&keyword == undefined) {
-        sql = `SELECT name,price,imgUrl FROM product order by timestamp desc`;
+    if (product_type == undefined && keyword == undefined && sales_type == undefined) {
+        sql = `SELECT * FROM product order by timestamp desc`;
     }
-    if (type != undefined &&keyword != undefined) {
-        sql = `SELECT name,price,imgUrl FROM product where product_type = ${type} and name like '%${keyword}%' order by timestamp desc`;
+    else if (product_type != undefined && keyword == undefined && sales_type == undefined) {
+        sql = `SELECT * FROM product where product_type = ${product_type}  order by timestamp desc`;
     }
-    if (type == undefined &&keyword != undefined) {
-        sql = `SELECT name,price,imgUrl FROM product where name like '%${keyword}%' order by timestamp desc`;
+    else if (product_type == undefined && keyword != undefined && sales_type == undefined) {
+        sql = `SELECT * FROM product where  name like '%${keyword}%' order by timestamp desc`;
     }
-    if (type != undefined &&keyword == undefined) {
-        sql = `SELECT name,price,imgUrl FROM product where product_type = ${type} order by timestamp desc`;
+    else if (product_type == undefined && keyword == undefined && sales_type != undefined) {
+        sql = `SELECT * FROM product where sales_type = ${sales_type} or sales_type = 3 order by timestamp desc`;
+    }
+    else if (product_type != undefined && keyword != undefined && sales_type == undefined) {
+        sql = `SELECT * FROM product where product_type = ${product_type}  and name like '%${keyword}%' order by timestamp desc`;
+    }
+    else if (product_type != undefined && keyword == undefined && sales_type != undefined) {
+        sql = `SELECT * FROM product where product_type = ${product_type} and (sales_type = ${sales_type} or sales_type = 3) order by timestamp desc`;
+    }
+    else if (product_type == undefined && keyword != undefined && sales_type != undefined) {
+        sql = `SELECT * FROM product where (sales_type = ${sales_type} or sales_type = 3) and name like '%${keyword}%' order by timestamp desc`;
+    }
+    else if (product_type != undefined && keyword != undefined && sales_type != undefined) {
+        sql = `SELECT * FROM product where product_type = ${product_type} and (sales_type = ${sales_type} or sales_type = 3)and name like '%${keyword}%' order by timestamp desc`;
     }
 
+
+
+
     console.log(sql);
+    mysqlClient.query(sql, function (err, result) {
+        if (err) {
+            response.writeHead(401);
+            console.log(err);
+            response.end(JSON.stringify({ result: 'error', msg: '服务器异常!', data: '' }));
+        } else {
+            response.end(JSON.stringify({ result: 'success', msg: '', data: JSON.stringify(result) }));
+        }
+    })
+}
+//获取产品数据
+function getSoldData(request, response) {
+    let res = url.parse(request.url, true);
+    let type = res.query.sales_type;
+
+    let sql = `SELECT * FROM sold_product where sales_type = ${type} AND user_id = 1 order by timestamp desc`;
+    console.log(sql);
+
     mysqlClient.query(sql, function (err, result) {
         if (err) {
             response.writeHead(401);
@@ -204,7 +242,7 @@ function login(request, response) {
         console.log(params.username);
         console.log(params.psw);
 
-        let sql = `SELECT username,password,mobilePhone,realityName,address,introduction,phone,email,idcard,role,head_photo FROM user_info WHERE mobilePhone ='${params.username}'`;
+        let sql = `SELECT * FROM user_info WHERE mobilePhone ='${params.username}'`;
 
         console.log(sql);
         mysqlClient.query(sql, function (err, result) {

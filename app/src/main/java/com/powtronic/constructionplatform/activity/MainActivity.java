@@ -49,7 +49,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        new Update(this).update();
+
         ButterKnife.bind(this);
         initView();
     }
