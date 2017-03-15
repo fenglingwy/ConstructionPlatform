@@ -1,1 +1,1 @@
-include ':app', ':encryption_decryption'
+include ':app', ':encryption_decryption', ':lib'

@@ -153,6 +153,11 @@ public class AddProductActivity extends BaseActivity {
                 .params("10", imageFile).execute(new DialogCallback<HttpMsg>(this) {
             @Override
             public void onSuccess(HttpMsg httpMsg, Call call, Response response) {
+                if(httpMsg==null){
+                    Toast.makeText(AddProductActivity.this,"网络异常!",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Log.d("TAG", "onSuccess: " + httpMsg);
 
                 product.setImgUrl(httpMsg.getData());
@@ -177,6 +182,10 @@ public class AddProductActivity extends BaseActivity {
                 .execute(new DialogCallback<HttpMsg>(AddProductActivity.this) {
                     @Override
                     public void onSuccess(HttpMsg httpMsg, Call call, Response response) {
+                        if(httpMsg==null){
+                            Toast.makeText(AddProductActivity.this,"网络异常!",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         finish();
                     }
                 });

@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.powtronic.constructionplatform.R;
+import com.powtronic.constructionplatform.activity.MaintainActivity;
 import com.powtronic.constructionplatform.activity.ProductListActivity;
 
 import java.util.ArrayList;
@@ -55,6 +56,9 @@ public class ProductMenuFragment extends BaseFragment{
         HashMap<String, String> map4 = new HashMap<>();
         map4.put("name","已出租");
         list.add(map4);
+        HashMap<String, String> map5 = new HashMap<>();
+        map5.put("name","维修任务");
+        list.add(map5);
 
 
         mLvProduct.setAdapter(new SimpleAdapter(getActivity(), list,R.layout.item_menu_product_menu,new String[]{"name"},
@@ -64,10 +68,12 @@ public class ProductMenuFragment extends BaseFragment{
 
     @OnItemClick(R.id.lv_product)
     public void onItemClick(int position){
-        Intent intent = new Intent(getActivity(), ProductListActivity.class);
-//        if(position==2||position==3){
-//            intent.putExtra("type",1);
-//        }
+        Intent intent = new Intent();
+        if(position==4||position==5){
+            intent.setClass(getActivity(), MaintainActivity.class);
+        }else{
+            intent.setClass(getActivity(), ProductListActivity.class);
+        }
         intent.putExtra("type",list.get(position).get("name"));
         startActivity(intent);
     }

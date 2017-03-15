@@ -189,6 +189,10 @@ public class ProductListActivity extends BaseActivity {
         request.execute(new DialogCallback<HttpMsg>(this) {
             @Override
             public void onSuccess(HttpMsg httpMsg, Call call, Response response) {
+                if(httpMsg==null){
+                    Toast.makeText(ProductListActivity.this,"网络异常!",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String data = httpMsg.getData();
                 Gson gson = new Gson();
                 ArrayList<Product> datas = gson.fromJson(data, new TypeToken<List<Product>>() {

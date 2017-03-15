@@ -19,11 +19,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
 import com.powtronic.constructionplatform.Callback.DialogCallback;
-import com.powtronic.constructionplatform.bean.Constants;
 import com.powtronic.constructionplatform.R;
 import com.powtronic.constructionplatform.activity.ProductDetailsActivity;
 import com.powtronic.constructionplatform.activity.SearchActivity;
 import com.powtronic.constructionplatform.adapter.SaleAdapter;
+import com.powtronic.constructionplatform.bean.Constants;
 import com.powtronic.constructionplatform.bean.HttpMsg;
 import com.powtronic.constructionplatform.bean.Product;
 
@@ -171,6 +171,11 @@ public class WareListFragment extends Fragment implements SaleAdapter.OnItemClic
         OkGo.get(Constants.GET_DATA_URL).params(params).execute(new DialogCallback<HttpMsg>(getActivity()) {
             @Override
             public void onSuccess(HttpMsg httpMsg, Call call, Response response) {
+                if(httpMsg==null){
+                    Toast.makeText(getActivity(),"网络异常!",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Log.d("TAG", "onSuccess: " + httpMsg);
                 String data = httpMsg.getData();
                 Gson gson = new Gson();
                 ArrayList<Product> datas = gson.fromJson(data, new TypeToken<List<Product>>() {

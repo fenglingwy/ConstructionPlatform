@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.powtronic.constructionplatform">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -38,7 +40,8 @@
         <activity
             android:name=".activity.AddProductActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".activity.URLSetting"></activity>
+        <activity android:name=".activity.URLSetting" />
+        <activity android:name=".activity.MaintainActivity"></activity>
     </application>
 
 </manifest>

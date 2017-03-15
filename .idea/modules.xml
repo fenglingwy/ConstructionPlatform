@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/ConstructionPlatform.iml" filepath="$PROJECT_DIR$/ConstructionPlatform.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/encryption_decryption/encryption_decryption.iml" filepath="$PROJECT_DIR$/encryption_decryption/encryption_decryption.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
     </modules>
   </component>
 </project>

@@ -78,6 +78,7 @@ public class MainActivity extends FragmentActivity {
     @OnClick(value = {R.id.btn_home, R.id.tv_home, R.id.ll_home})
     public void toHome(View v) {
         tx = fm.beginTransaction();
+//        Fragment fragment = mFragmentManager.findFragmentByTag(name);
         if (homeFragment == null) homeFragment = new HomeFragment();
         tx.replace(R.id.fl_main, homeFragment, "HOME");
         setSelector(mBtnHome, mTvHome);
